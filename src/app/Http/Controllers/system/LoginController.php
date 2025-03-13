@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\system;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,7 +10,7 @@ class LoginController extends Controller
 {
     public function showLoginForm(Request $request)
     {
-        return view('auth.login');
+        return view('system.auth.login');
     }
 
     public function login(Request $request)
@@ -21,7 +22,9 @@ class LoginController extends Controller
 
         //もしログインが成功したらanswerのページにリダイレクトする
         if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
-            return redirect()->route('auth.answer');
+
+
+            return redirect()->route('system.answer.index');
         }
         //エラーならログインページに戻す
         return redirect()->back()

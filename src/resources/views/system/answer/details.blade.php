@@ -5,7 +5,7 @@
 @section('body_contents')
 
 	<body>
-		<form action="{{ route('auth.answer') }}" method="GET">
+		<form action="{{ route('system.answer.index') }}" method="GET">
 			@csrf
 			<div class="container mt-5">
 				<div class="d-flex justify-content-center">
@@ -24,7 +24,7 @@
 						{{ $answer->fullname }}
 					</div>
 				</div>
-				{{-- //性別の選択肢を作る --}}
+				{{-- 性別の選択肢を作る --}}
 				<div class="form-group row align-items-center mb-3">
 					<label for="gender" class="col-sm-2 col-form-label text-center">性別</label>
 					<div class="col-sm-4 text-center">
@@ -76,7 +76,7 @@
 			<div class="d-flex justify-content-center gap-3">
 				<button type="submit" class="btn btn-success">一覧に戻る</button>
 		</form>
-		<form action="{{ route('auth.destroy', ['id' => $answer->id]) }}" method=POST>
+		<form action="{{ route('system.answer.destroy', ['id' => $answer->id]) }}" method=POST>
 			@csrf
 			<button type="submit" class="btn btn-danger" onclick='return confirm("本当に削除しますか？")'>削除</button>
 		</form>

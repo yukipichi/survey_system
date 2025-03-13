@@ -2,7 +2,7 @@
 
 @section('body_contents')
 	<h3>アンケート管理システム</h3>
-	<form method="GET" action="{{ route('auth.answer') }}">
+	<form method="GET" action="{{ route('system.answer.index') }}">
 		@csrf
 
 		<div class="card p-4 border">
@@ -107,7 +107,7 @@
 		</div>
 	</form>
 
-	<form id="delete-form" action="{{ route('auth.deleteMultiple') }}" method="POST">
+	<form id="delete-form" action="{{ route('system.answer.deleteMultiple') }}" method="POST">
 		@csrf
 
 		<div class="container mt-3">
@@ -161,11 +161,11 @@
 						<td><input type="checkbox" name="answer[]" value="{{ $answer->id }}" onClick="disChecked();"></td>
 						<td>{{ $answer->id }}</td>
 						<td>{{ $answer->fullname }}</td>
-						<td>{{ $answer->gender }}</td>
-						<td>{{ $answer->age_id }}</td>
-						<td>{{ \Illuminate\Support\Str::limit($answer->feedback, 30, '...') }}</td>
+                        <td>{{ $answer->gender_label }}</td>
+						<td>{{ $answer->age_label }}</td>
+						<td>{{ $answer->feedback_limit }}</td>
 						<td>
-							<a href="{{ route('auth.details', ['id' => $answer->id]) }}" class="btn btn-primary">詳細</a>
+							<a href="{{ route('system.answer.details', ['id' => $answer->id]) }}" class="btn btn-primary">詳細</a>
 						</td>
 					</tr>
 				@endforeach

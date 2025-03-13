@@ -21,7 +21,6 @@ class ConfirmRequest extends FormRequest
      */
     public function rules(): array
     {
-        // dd($this);
         return [
             'fullname' => ['required', 'string', 'min:0', 'max:255'],
             'gender' => ['required', 'integer', 'in:1,2'],
