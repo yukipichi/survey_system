@@ -42,22 +42,15 @@
 				<div class="form-group row align-items-center mb-3">
 					<label for="age_id" name="age_id" class="col-sm-2 col-form-label">年代<span class="text-danger">※</span></label>
 					<div class="col-sm-10">
-						{{-- <select class="form-control" id="ages" name="ages">
-							<option disabled {{ old('ages') ? '' : 'selected' }}>選択してください</option>
-							@foreach ($ages as $ageData)
-								<option value="{{ $ageData->id }}"{{ old('ages') == $ageData->age ? 'selected' : '' }}>
-									{{ $ageData->age }}</option>
-							@endforeach
-						</select> --}}
-                        <select name="age_id" class="form-control">
-                            <option value="">選択してください</option>
-                            <option value="1" {{ old('age_id') == '1' ? 'selected' : '' }}>10代以下</option>
-                            <option value="2" {{ old('age_id') == '2' ? 'selected' : '' }}>20代</option>
-                            <option value="3" {{ old('age_id') == '3' ? 'selected' : '' }}>30代</option>
-                            <option value="4" {{ old('age_id') == '4' ? 'selected' : '' }}>40代</option>
-                            <option value="5" {{ old('age_id') == '5' ? 'selected' : '' }}>50代</option>
-                            <option value="6" {{ old('age_id') == '6' ? 'selected' : '' }}>60代</option>
-                        </select>
+						<select name="age_id" class="form-control">
+							<option value="">選択してください</option>
+							<option value="1" {{ old('age_id') == '1' ? 'selected' : '' }}>10代以下</option>
+							<option value="2" {{ old('age_id') == '2' ? 'selected' : '' }}>20代</option>
+							<option value="3" {{ old('age_id') == '3' ? 'selected' : '' }}>30代</option>
+							<option value="4" {{ old('age_id') == '4' ? 'selected' : '' }}>40代</option>
+							<option value="5" {{ old('age_id') == '5' ? 'selected' : '' }}>50代</option>
+							<option value="6" {{ old('age_id') == '6' ? 'selected' : '' }}>60代</option>
+						</select>
 						@if ($errors->has('age_id'))
 							<div class="text-danger">
 								<strong>{{ $errors->first('age_id') }}</strong>
