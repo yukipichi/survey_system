@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Hash;
+
+class RegisterController extends Controller
+{
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        try {
+            $user = new User();
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return redirect()->route('auth.create')->with('success', '登録が完了しました!');
+        } catch (\Exception $e) {
+            return redirect()->route('auth.register')
+                ->withErrors(['message' => '登録に失敗しました。' . $e->getMessage()])
+                ->withInput();
+        }
+    }
+}
