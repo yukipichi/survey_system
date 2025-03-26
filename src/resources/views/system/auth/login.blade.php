@@ -14,7 +14,7 @@
 					<div class="card-header">{{ __('Login') }}</div>
 
 					<div class="card-body">
-						<form method="POST" action="{{ route('auth.login') }}">
+						<form method="POST" action="{{ route('system.auth.login') }}">
 							@csrf
 
 							<div class="row mb-3">
@@ -67,12 +67,12 @@
 											{{ __('Login') }}
 										</button>
 										<button type="submit" class="btn btn-primary" name= "action" formmethod="POST"
-											formaction="{{ route('auth.logout') }}">
+											formaction="{{ route('system.auth.logout') }}">
 											{{ __('Logout') }}
 										</button>
 
 										@if (Route::has('password.request'))
-											<a class="btn btn-link" href="{{ route('password.request') }}">
+											<a class="btn btn-link" href="{{ route('system.password.request') }}">
 												{{ __('Forgot Your Password?') }}
 											</a>
 										@endif

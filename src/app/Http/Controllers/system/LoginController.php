@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\system;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
     public function showLoginForm(Request $request)
     {
-        return view('auth.login');
+        return view('system.auth.login');
     }
 
     public function login(Request $request)
@@ -19,12 +21,16 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        //ログイン状態の保持
+        $remember = $request->has('remember');
+
         //もしログインが成功したらanswerのページにリダイレクトする
-        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
-            return redirect()->route('auth.answer');
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')], $remember)) {
+            return redirect()->route('system.answer.index');
         }
+
         //エラーならログインページに戻す
-        return redirect()->back()
+        return redirect()->route('system.auth.login')
             ->withErrors(['login' => 'メールアドレスまたはパスワードが間違っています。'])
             ->withInput($request->only('email'));
     }

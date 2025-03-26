@@ -150,4 +150,11 @@ return [
     'uppercase'            => ':Attributeは、大文字で入力してください。',
     'url'                  => ':Attributeは、有効なURL形式で指定してください。',
     'uuid'                 => ':Attributeは、有効なUUIDである必要があります。',
+
+    'attributes' => [
+        'fullname' => '氏名',
+        'age_id' => '年代',
+        'gender' => '性別',
+        'email' => 'メールアドレス',
+    ],
 ];

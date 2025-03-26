@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\system;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,7 +11,7 @@ class RegisterController extends Controller
 {
     public function showRegisterForm()
     {
-        return view('auth.register');
+        return view('system.auth.register');
     }
 
     public function create(Request $request)
@@ -28,9 +29,9 @@ class RegisterController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
-            return redirect()->route('auth.create')->with('success', '登録が完了しました!');
+            return redirect()->route('system.auth.create')->with('success', '登録が完了しました!');
         } catch (\Exception $e) {
-            return redirect()->route('auth.register')
+            return redirect()->route('system.auth.register')
                 ->withErrors(['message' => '登録に失敗しました。' . $e->getMessage()])
                 ->withInput();
         }

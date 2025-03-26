@@ -14,7 +14,7 @@
 					<div class="card-header">{{ __('Register') }}</div>
 
 					<div class="card-body">
-						<form method="POST" action="{{ route('auth.create') }}">
+						<form method="POST" action="{{ route('system.auth.create') }}">
 							@csrf
 
 							<div class="row mb-3">

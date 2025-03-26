@@ -2,7 +2,7 @@
 
 @section('body_contents')
 	<h3>アンケート管理システム</h3>
-	<form method="GET" action="{{ route('auth.answer') }}">
+	<form method="GET" action="{{ route('system.answer.index') }}">
 		@csrf
 
 		<div class="card p-4 border">
@@ -43,17 +43,17 @@
 						<div class="col-sm-9">
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="gender" value="0" checked
-									{{ request('gender') == '0' ? 'checked' : '' }}>
+									{{ request('gender', '0') == 0 ? 'checked' : '' }}>
 								<label class="form-check-label">すべて</label>
 							</div>
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="gender" value="1"
-									{{ request('gender') == '1' ? 'checked' : '' }}>
+									{{ request('gender') == 1 ? 'checked' : '' }}>
 								<label class="form-check-label">男性</label>
 							</div>
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="gender" value="2"
-									{{ request('gender') == '2' ? 'checked' : '' }}>
+									{{ request('gender') == 2 ? 'checked' : '' }}>
 								<label class="form-check-label">女性</label>
 							</div>
 						</div>
@@ -82,7 +82,7 @@
 						<div class="col-sm-8">
 							<div class="form-check">
 								<input class="form-check-input" name="is_send_email" type="checkbox" value="1"
-									{{ request('is_send_email') == '1' ? 'checked' : '' }}>
+									{{ request('is_send_email') == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="is_send_email">送信許可のみ</label>
 							</div>
 						</div>
@@ -107,7 +107,7 @@
 		</div>
 	</form>
 
-	<form id="delete-form" action="{{ route('auth.deleteMultiple') }}" method="POST">
+	<form id="delete-form" action="{{ route('system.answer.deleteMultiple') }}" method="POST">
 		@csrf
 
 		<div class="container mt-3">
@@ -161,11 +161,11 @@
 						<td><input type="checkbox" name="answer[]" value="{{ $answer->id }}" onClick="disChecked();"></td>
 						<td>{{ $answer->id }}</td>
 						<td>{{ $answer->fullname }}</td>
-						<td>{{ $answer->gender }}</td>
-						<td>{{ $answer->age_id }}</td>
-						<td>{{ \Illuminate\Support\Str::limit($answer->feedback, 30, '...') }}</td>
+						<td>{{ $answer->gender_label }}</td>
+						<td>{{ $answer->age_label }}</td>
+						<td>{{ $answer->feedback_limit }}</td>
 						<td>
-							<a href="{{ route('auth.details', ['id' => $answer->id]) }}" class="btn btn-primary">詳細</a>
+							<a href="{{ route('system.answer.details', ['id' => $answer->id]) }}" class="btn btn-primary">詳細</a>
 						</td>
 					</tr>
 				@endforeach
@@ -182,14 +182,13 @@
 
 	<script type="text/javascript">
 		function resetSearch() {
-			window.location.href = "{{ url('/system/answer/index') }}";
+			window.location.href = "{{ route('system.answer.index') }}";
 		}
 	</script>
 
 	<script type="text/javascript">
 		function allChecked() {
 			var allChecked = document.getElementsByName('all')[0].checked;
-			console.log(allChecked);
 
 			for (var i = 0; i < document.getElementsByName('answer[]').length; i++) {
 				document.getElementsByName('answer[]')[i].checked = allChecked;
@@ -198,10 +197,7 @@
 
 		function disChecked() {
 			var inputCheckboxList = document.getElementsByName('answer[]');
-			console.log(inputCheckboxList);
-
 			var a = [...inputCheckboxList];
-			console.log(a);
 			var allChecked = document.getElementsByName('all')[0];
 
 			if (![...inputCheckboxList].every(cb => cb.checked)) {
