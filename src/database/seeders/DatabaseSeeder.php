@@ -20,9 +20,6 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->call([
             AgesSeeder::class,
-        ]);
-
-        $this->call([
             AnswersTableSeeder::class,
         ]);
     }
