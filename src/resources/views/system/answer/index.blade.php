@@ -1,10 +1,16 @@
 @extends('layouts.app')
 
 @section('body_contents')
-	<h3>アンケート管理システム</h3>
+	<div style="display: flex; justify-content: space-between; align-items: center;">
+		<h3>アンケート管理システム</h3>
+		<form method="POST" action="{{ route('system.auth.logout') }}">
+			@csrf
+			<button type="submit" class="btn btn-sm btn-outline-secondary">ログアウト</button>
+		</form>
+	</div>
+
 	<form method="GET" action="{{ route('system.answer.index') }}">
 		@csrf
-
 		<div class="card p-4 border">
 			<div class="row align-items-center mb-3">
 				{{-- 氏名 --}}
