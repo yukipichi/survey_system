@@ -14,43 +14,43 @@ class Answer extends Model
 
     protected $fillable = ['fullname', 'gender', 'age_id', 'email', 'is_send_email', 'feedback',];
 
-    //名前でフィルタリング
+    // 名前でフィルタリング
     public function scopeFullname($query, $fullname)
     {
         return $query->when(filled($fullname), fn($q) => $q->where('fullname', 'LIKE', "%{$fullname}%"));
     }
 
-    //年齢IDでフィルタリング
+    // 年齢IDでフィルタリング
     public function scopeAgeId($query, $age_id)
     {
         return $query->when(filled($age_id), fn($q) => $q->where('age_id', $age_id));
     }
 
-    //性別でフィルタリング
+    // 性別でフィルタリング
     public function scopeGender($query, $gender)
     {
         return $query->when(filled($gender) && $gender != 0, fn($q) => $q->where('gender', $gender));
     }
 
-    //作成日からフィルタリング
+    // 作成日からフィルタリング
     public function scopeCreatedFrom($query, $created_from)
     {
         return $query->when(filled($created_from), fn($q) => $q->whereDate('created_at', '>=', $created_from));
     }
 
-    //作成日までフィルタリング
+    // 作成日までフィルタリング
     public function scopeCreatedTo($query, $created_to)
     {
         return $query->when(filled($created_to), fn($q) => $q->whereDate('created_at', '<=', $created_to));
     }
 
-    //メール送信可否でフィルタリング
+    // メール送信可否でフィルタリング
     public function scopeIsSendEmail($query, $is_send_email)
     {
         return $query->when(filled($is_send_email), fn($q) => $q->where('is_send_email', $is_send_email));
     }
 
-    //キーワードでフィルタリング
+    // キーワードでフィルタリング
     public function scopeKeyword($query, $keyword)
     {
         return $query->when(filled($keyword), function ($q) use ($keyword) {
@@ -59,7 +59,7 @@ class Answer extends Model
         });
     }
 
-    //性別ラベルを取得する
+    // 性別ラベルを取得する
     public static function getGenderLabel($value)
     {
         return match ($value) {
@@ -70,7 +70,7 @@ class Answer extends Model
         };
     }
 
-    //性別ラベルからIDを取得
+    // 性別ラベルからIDを取得
     public static function getGenderId($gender)
     {
         return match ($gender) {
@@ -81,7 +81,7 @@ class Answer extends Model
         };
     }
 
-    //年齢ラベルをIDから取得
+    // 年齢ラベルをIDから取得
 
     public static function getAgeLabel($age_id)
     {
@@ -96,7 +96,7 @@ class Answer extends Model
         };
     }
 
-    //年齢IDを取得
+    // 年齢IDを取得
     public static function getAgeId($age_id)
     {
         return match ($age_id) {
@@ -110,19 +110,19 @@ class Answer extends Model
         };
     }
 
-    //メール送信可否をラベルで返す
+    // メール送信可否をラベルで返す
     public static function getIsSendEmailLabel($value)
     {
         return $value == 1 ? '送信可能' : '送信不可';
     }
 
-    //is_send_emailの値を変換
+    // is_send_emailの値を変換
     public static function getIsSendEmailStatus($value)
     {
         return $value ? 1 : 0;
     }
 
-    //Ageモデルのリレーション
+    // Ageモデルのリレーション
     public function age()
     {
         return $this->belongsTo(Age::class);

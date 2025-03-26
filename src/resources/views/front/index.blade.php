@@ -23,7 +23,7 @@
 						@endif
 					</div>
 				</div>
-				{{-- //性別の選択肢を作る --}}
+				{{-- 性別の選択肢を作る --}}
 				<div class="form-group row align-items-center mb-3">
 					<label for="gender" class="col-sm-2 col-form-label">性別<span class="text-danger">※</span></label>
 					<div class="col-sm-10">
