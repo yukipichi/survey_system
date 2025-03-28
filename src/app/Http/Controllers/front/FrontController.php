@@ -25,7 +25,7 @@ class FrontController extends Controller
     {
         $validatedData = $request->validated();
 
-        //性別と年齢とemail送信ラベルを取得
+        // 性別と年齢とemail送信ラベルを取得
         $genderLabel = Answer::getGenderLabel($validatedData['gender']);
         $ageLabel = Answer::getAgeLabel($validatedData['age_id']);
         $isSendEmailLabel = Answer::getIsSendEmailLabel($validatedData['is_send_email']);
@@ -37,7 +37,7 @@ class FrontController extends Controller
     {
         $validatedData = $request->validated();
 
-        //DBにデータを保存
+        // DBにデータを保存
         Answer::create([
             'fullname' => $validatedData['fullname'],
             'gender' => (int)$validatedData['gender'],
