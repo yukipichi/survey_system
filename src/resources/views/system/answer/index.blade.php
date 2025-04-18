@@ -9,7 +9,7 @@
 		</form>
 	</div>
 
-	<form method="GET" action="{{ route('system.answer.index') }}">
+	<form id="searchForm">
 		@csrf
 		<div class="card p-4 border">
 			<div class="row align-items-center mb-3">
@@ -87,7 +87,7 @@
 						<label for="is_send_email" class="col-sm-4 col-form-label text-end">メール送信許可</label>
 						<div class="col-sm-8">
 							<div class="form-check">
-								<input class="form-check-input" name="is_send_email" type="checkbox" value="1"
+								<input class="form-check-input" id="is_send_email" name="is_send_email" type="checkbox" value="1" checked
 									{{ request('is_send_email') == 1 ? 'checked' : '' }}>
 								<label class="form-check-label" for="is_send_email">送信許可のみ</label>
 							</div>
@@ -108,107 +108,152 @@
 			{{-- ボタン（中央揃え） --}}
 			<div class="text-center">
 				<button onclick="resetSearch()" class="btn btn-sm btn-outline-secondary" type="reset">リセット</button>
-				<button class="btn btn-sm btn-success text-white" type="submit">検索</button>
+				<button onclick="doSearch()" class="btn btn-sm btn-success text-white" type="button">検索</button>
 			</div>
 		</div>
 	</form>
 
-	<form id="delete-form" action="{{ route('system.answer.deleteMultiple') }}" method="POST">
-		@csrf
+		<button type="button" class="btn btn-danger my-4" onclick="deleteSelected()">選択したアンケートを削除</button>
 
-		<div class="container mt-3">
-			<div class="d-flex justify-content-between align-items-center">
-				{{-- 削除ボタン --}}
-				<button type="submit" class="btn btn-danger">選択したアンケートを削除</button>
+	<table id="table"></table>
 
-				{{-- 表示件数 / 全体の件数 --}}
-				<div class="text-muted">
-					<span>全 {{ $answers->total() }} 件中 {{ $answers->firstItem() }} 〜 {{ $answers->lastItem() }} 件表示</span>
-				</div>
+	<script type="text/javascript">
+		$('#table').bootstrapTable({
+			pagination: true,
+			paginationParts: ['pageList', 'pagination'],
+			sidePagination: 'server',
+			totalField: 'total',
+			dataField: 'data',
+			sortable: true,
+			ajax: function(params) {
+				const form = document.getElementById('searchForm');
+				const formData = new FormData(form);
 
-				{{-- ページネーション --}}
-				<nav aria-label="Page navigation example">
-					<ul class="pagination mb-0">
-						<li class="page-item {{ $answers->onFirstPage() ? 'disabled' : '' }}">
-							<a class="page-link" href="{{ $answers->previousPageUrl() }}" tabindex="-1">&lt;</a>
-						</li>
-						@foreach (range(1, min(8, $answers->lastPage())) as $i)
-							<li class="page-item {{ $i == $answers->currentPage() ? 'active' : '' }}">
-								<a class="page-link" href="{{ $answers->url($i) }}">{{ $i }}</a>
-							</li>
-						@endforeach
-						<li class="page-item {{ $answers->hasMorePages() ? '' : 'disabled' }}">
-							<a class="page-link" href="{{ $answers->nextPageUrl() }}">&gt;</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
-		</div>
+				const queryParams = {};
+				formData.forEach((value, key) => {
+					queryParams[key] = value;
+				});
 
-		<table class="table">
-			<thead>
-				<tr>
-					<th>
-						<label for ="select_all">
-							<input type="checkbox" name="all" id="select_all" onClick="allChecked();">全選択
-						</label>
-					</th>
-					<th>ID</th>
-					<th>氏名</th>
-					<th>性別</th>
-					<th>年齢</th>
-					<th>内容</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach ($answers as $answer)
-					<tr>
-						<td><input type="checkbox" name="answer[]" value="{{ $answer->id }}" onClick="disChecked();"></td>
-						<td>{{ $answer->id }}</td>
-						<td>{{ $answer->fullname }}</td>
-						<td>{{ $answer->gender_label }}</td>
-						<td>{{ $answer->age_label }}</td>
-						<td>{{ $answer->feedback_limit }}</td>
-						<td>
-							<a href="{{ route('system.answer.details', ['id' => $answer->id]) }}" class="btn btn-primary">詳細</a>
-						</td>
-					</tr>
-				@endforeach
-			</tbody>
-		</table>
-	</form>
+				let limit = params.data.limit;
+				let offset = params.data.offset;
+				let sort = params.data.sort;
+				let order = params.data.order;
 
-	@if ($answers->isEmpty())
-		<div class="alert alert-warning text-center mt-3">
-			該当するアンケートがありません。
-		</div>
-	@else
-	@endif
+				fetch('/system/answers/fetchList', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-Requested-With': 'XMLHttpRequest',
+							'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+								'content')
+						},
+						body: JSON.stringify({
+							limit,
+							offset,
+							sort,
+							order,
+							...queryParams
+						})
+					})
+					.then(res => res.json())
+					.then(response => {
+						params.success(response);
+					})
+					.catch(error => console.error("Error:", error));
+			},
+
+			columns: [{
+					field: 'state',
+					checkbox: true,
+
+				},
+				{
+					field: 'id',
+					title: 'ID',
+					sortable: true
+				},
+				{
+					field: 'fullname',
+					title: '氏名',
+					sortable: true
+				},
+				{
+					field: 'gender',
+					title: '性別',
+					sortable: true,
+					formatter: (value, row) => row.gender_label
+
+				},
+				{
+					field: 'age_id',
+					title: '年齢',
+					sortable: true,
+					formatter: (value, row) => row.age_label
+				},
+				{
+					field: 'feedback_limit',
+					title: '内容'
+				},
+				{
+					field: 'actions',
+					title: '',
+					formatter: function(value, row) {
+						return `<a href="/system/answers/${row.id}" class="btn btn-sm btn-outline-primary">詳細</a>`;
+					}
+				}
+			]
+		});
+	</script>
 
 	<script type="text/javascript">
 		function resetSearch() {
 			window.location.href = "{{ route('system.answer.index') }}";
 		}
-	</script>
 
-	<script type="text/javascript">
-		function allChecked() {
-			var allChecked = document.getElementsByName('all')[0].checked;
-
-			for (var i = 0; i < document.getElementsByName('answer[]').length; i++) {
-				document.getElementsByName('answer[]')[i].checked = allChecked;
-			}
+		function doSearch() {
+			$('#table').bootstrapTable('refresh', {
+				pageNumber: 1
+			});
 		}
 
-		function disChecked() {
-			var inputCheckboxList = document.getElementsByName('answer[]');
-			var a = [...inputCheckboxList];
-			var allChecked = document.getElementsByName('all')[0];
+		function deleteSelected() {
+			const selected = $('#table').bootstrapTable('getSelections');
 
-			if (![...inputCheckboxList].every(cb => cb.checked)) {
-				allChecked.checked = false;
+			if (selected.length === 0) {
+				alert('削除するアンケートを選択してください。');
+				return;
 			}
+
+			if (!confirm('選択したアンケートを削除してもよろしいですか？')) {
+				return;
+			}
+
+			const ids = selected.map(row => row.id);
+
+			fetch('/system/answers/deleteSelected', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+					},
+					body: JSON.stringify({
+						ids: ids
+					})
+				})
+				.then(res => res.json())
+				.then(response => {
+					if (response.success) {
+						alert('削除が完了しました。');
+						$('#table').bootstrapTable('refresh');
+					} else {
+						alert('削除に失敗しました。');
+					}
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					alert('エラーが発生しました。');
+				});
 		}
 	</script>
 @endsection

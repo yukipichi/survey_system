@@ -2,68 +2,54 @@
 
 namespace App\Http\Controllers\system;
 
-use App\Models\Answer;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\AnswerService;
 
 class AnswerController extends Controller
 {
-    public function index(Request $request)
-    {
-       $answers =Answer::query()
-         ->fullname($request->fullname)
-         ->ageId($request->age_id)
-         ->gender($request->gender)
-         ->createdFrom($request->created_from)
-         ->createdTo($request->created_to)
-         ->isSendEmail($request->is_send_email)
-         ->keyword($request->keyword)
-         ->paginate(10)
-         ->appends(request()->query());
 
-    // 各ラベルを追加
-    foreach($answers as $answer){
-        $answer->gender_label = Answer::getGenderLabel($answer->gender);
-        $answer->age_label = Answer::getAgeLabel($answer->age_id);
-        $answer->isSendEmail_label = Answer::getIsSendEmailLabel($answer->is_send_email);
-        $answer->feedback_limit = Str::limit($answer->feedback, 30, '...');
+    protected $answerService;
+
+    public function __construct(AnswerService $answerService)
+    {
+        $this->answerService = $answerService;
     }
-        return view('system.answer.index', compact('answers'));
+    // アンケート画面表示
+    public function index()
+    {
+        return view('system.answer.index');
+    }
+
+    // アンケート検索機能
+    public function fetchList(Request $request)
+    {
+        return response()->json(
+            $this->answerService->getPaginatedAnswers($request)
+        );
     }
 
     // 詳細表示
     public function show($id)
     {
-        $answer = Answer::findOrFail($id);
+        $data = $this->answerService->getAnswerDetails($id);
 
-        $genderLabel = Answer::getGenderLabel($answer->gender);
-        $ageLabel = Answer::getAgeLabel($answer->age_id);
-        $isSendEmailLabel = Answer::getIsSendEmailLabel($answer->is_send_email);
-
-        return view('system.answer.details', compact('answer','genderLabel','ageLabel','isSendEmailLabel'));
+        return view('system.answer.details', $data);
     }
 
     // 削除処理
     public function destroy($id)
     {
-        $answer = Answer::find($id);
-        $answer->delete();
+        $this->answerService->deleteAnswer($id);
 
         return redirect()->route('system.answer.index')->with('success', '削除しました');
     }
 
     // 選択削除処理
-    public function deleteMultiple(Request $request)
+    public function deleteSelected(Request $request)
     {
-        $ids = $request->input('answer', []);
+        $result = $this->answerService->deleteAnswerByIds($request->input('ids'));
 
-        if (!is_array($ids) || empty($ids)) {
-            return redirect()->back()->with('error', '削除するアンケートが選択されていません');
-        }
-
-        Answer::whereIn('id', $ids)->delete();
-
-        return redirect()->back()->with('success', '選択されたアンケートを削除しました');
+        return response()->json($result);
     }
 }
