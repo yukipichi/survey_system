@@ -23,9 +23,9 @@ Route::post('/system/register', [RegisterController::class, 'create'])->name('sy
 // 認証機能
 Route::middleware('auth')->group(function () {
     Route::get('/system/answers', [AnswerController::class, 'index'])->name('system.answer.index'); //管理画面アンケート一覧
-    Route::get('/system/answers/{id} ', [AnswerController::class, 'show'])->name('system.answer.details'); //管理画面アンケートの詳細
+    Route::post('/system/answers/fetchList', [AnswerController::class, 'fetchList'])->name('system.answer.fetchList');// アンケート一覧の表示
+    Route::get('/system/answers/{id}', [AnswerController::class, 'show'])->name('system.answer.details'); //管理画面アンケートの詳細
     Route::post('/system/answers/destroy/{id}', [AnswerController::class, 'destroy'])->name('system.answer.destroy'); //管理画面アンケート削除
     Route::post('/system/answers/deleteSelected', [AnswerController::class, 'deleteSelected']);
-    Route::post('/system/answers/fetchList', [AnswerController::class, 'fetchList'])->name('system.answer.fetchList');// アンケート一覧の表示
 });
 
