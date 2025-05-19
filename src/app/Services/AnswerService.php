@@ -17,29 +17,30 @@ class AnswerService
         $this->answerRepository = $answerRepository;
     }
 
+    /**
+     * AnswerのデータをPaginate型で返す
+     *
+     * @param Request $request
+     *
+     * @return LengthAwarePaginator
+     */
     public function getPaginatedAnswers(Request $request)
     {
         $limit = $request->input('limit', 10); // 1ページの件数
         $offset = $request->input('offset', 0); // 何件目から
         $page = floor($offset / $limit) + 1; // Laravel用の現在ページ番号（1始まり）
 
-        $query = $this->answerRepository->queryWithFilters($request->all());
-
-        // データを取得
-        $answers = $query->orderBy(
-            $request->input('sort', 'id'),
-            $request->input('order', 'asc')
-        )->paginate($limit, ['*'], 'page', $page);
+        $paginateAnswers = $this->answerRepository->paginateWithFilters($request->all(), $limit, $page);
 
         // 各ラベルを追加
-        foreach ($answers as $answer) {
+        foreach ($paginateAnswers as $answer) {
             $answer->gender_label = Answer::getGenderLabel($answer->gender);
             $answer->age_label = Answer::getAgeLabel($answer->age_id);
             $answer->isSendEmail_label = Answer::getIsSendEmailLabel($answer->is_send_email);
             $answer->feedback_limit = Str::limit($answer->feedback, 30, '...');
         }
 
-        return $answers;
+        return $paginateAnswers;
     }
 
     public function getAnswerDetails($id)

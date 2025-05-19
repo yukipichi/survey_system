@@ -26,6 +26,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/system/answers/fetchList', [AnswerController::class, 'fetchList'])->name('system.answer.fetchList');// アンケート一覧の表示
     Route::get('/system/answers/{id}', [AnswerController::class, 'show'])->name('system.answer.details'); //管理画面アンケートの詳細
     Route::post('/system/answers/destroy/{id}', [AnswerController::class, 'destroy'])->name('system.answer.destroy'); //管理画面アンケート削除
-    Route::post('/system/answers/deleteSelected', [AnswerController::class, 'deleteSelected']);
+    Route::post('/system/answers/deleteSelected', [AnswerController::class, 'deleteSelected'])->name('system.answer.deleteSelected');//管理画面アンケートの複数削除
 });
 
