@@ -2,21 +2,14 @@
 
 namespace Tests\Feature\Api;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Answer;
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 
 class AnswerTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-
     protected $user;
-    protected $answer;
 
     protected function setUp(): void
     {
@@ -214,7 +207,7 @@ class AnswerTest extends TestCase
     /**
      * fetchListのキーワード検索のテスト
      */
-    public function testSuccessFetchListKeyWordSearch()
+    public function testSuccessFetchListKeywordSearch()
     {
         Answer::factory()->create([
             'feedback' => 'abcd',
@@ -233,7 +226,7 @@ class AnswerTest extends TestCase
 
         Answer::factory()->create([
             'feedback' => 'xyz',
-            'email' => 'abc.jp',
+            'email' => 'xxabc.jp',
         ]);
 
         $response = $this->postJson(route('system.answer.fetchList'), [
@@ -244,12 +237,12 @@ class AnswerTest extends TestCase
         $responseData = $response->json('data');
 
         $this->assertCount(2, $responseData);
-
-        foreach ($responseData as $item) {
-            $this->assertTrue(
-                Str::contains($item['feedback'], 'abcd') || Str::contains($item['email'], 'abc.jp'),
-            );
-        }
+        // 1つ目のデータの assertチェック
+        $this->assertEquals('abcd', $responseData[0]['feedback']);
+        $this->assertEquals('example.com', $responseData[0]['email']);
+        // 2つ目のデータの assertチェック
+        $this->assertEquals('xyz', $responseData[1]['feedback']);
+        $this->assertEquals('xxabc.jp', $responseData[1]['email']);
     }
 
     /**
@@ -266,13 +259,10 @@ class AnswerTest extends TestCase
             'is_send_email' => 1,
         ]);
 
-
         $response = $this->get(route('system.answer.details', ['id' => $answer->id]));
 
         $response->assertStatus(200);
-
         $response->assertViewIs('system.answer.details');
-
         $response->assertViewHas('answer');
     }
 
@@ -309,9 +299,8 @@ class AnswerTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-
-        foreach ($ids as $id) {
-            $this->assertSoftDeleted('answers', ['id' => $id]);
-        }
+        $this->assertSoftDeleted('answers', ['id' => $ids[0]]);
+        $this->assertSoftDeleted('answers', ['id' => $ids[1]]);
+        $this->assertSoftDeleted('answers', ['id' => $ids[2]]);
     }
 }
