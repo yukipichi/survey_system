@@ -12,7 +12,7 @@ class Answer extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['fullname', 'gender', 'age_id', 'email', 'is_send_email', 'feedback',];
+    protected $fillable = ['fullname', 'gender', 'age_id', 'email', 'is_send_email', 'feedback', 'created_at'];
 
     // 名前でフィルタリング
     public function scopeFullname($query, $fullname)

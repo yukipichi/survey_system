@@ -37,7 +37,7 @@ class AnswerFactory extends Factory
             'feedback' => $this->faker->realText(50),
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' => Carbon::now()->toDateTimeString(),
-            'deleted_at' => $this->faker->optional(0.2)->dateTime(),
+            'deleted_at' => null,
         ];
     }
 }

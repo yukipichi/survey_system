@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class FrontControllerTest extends TestCase
+class FrontTest extends TestCase
 {
     /**
      * A basic test example.

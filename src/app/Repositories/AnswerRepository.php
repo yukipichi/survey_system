@@ -7,7 +7,7 @@ use App\Models\Answer;
 class AnswerRepository
 {
 
-    public function queryWithFilters($filters)
+    public function paginateWithFilters($filters, $limit, $page)
     {
         return Answer::query()
             ->fullname($filters['fullname'] ?? null)
@@ -16,7 +16,9 @@ class AnswerRepository
             ->createdFrom($filters['created_from'] ?? null)
             ->createdTo($filters['created_to'] ?? null)
             ->isSendEmail($filters['is_send_email'] ?? null)
-            ->keyword($filters['keyword'] ?? null);
+            ->keyword($filters['keyword'] ?? null)
+            ->orderBy('id', 'asc')
+            ->paginate($limit, ['*'], 'page', $page);
     }
 
     public function find($id)
