@@ -87,7 +87,6 @@ class AnswerServiceTest extends TestCase
      *
      * @return void
      */
-
     public function testSuccessGetAnswerDetails(): void
     {
         $answer = new Answer([
