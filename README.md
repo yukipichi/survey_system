@@ -21,5 +21,4 @@ https://note.com/yuppymam/n/ne461180705be
 | ------------------------------------------------------ | ------------------------------------|
 | docker-compose up -d                                   | Docker の 起動                       |
 | docker compose exec -it survey_system-app-1 bash       | Docker コンテナに入る 　　　　　　　　　 |
-| npm run dev                                            | フロントエンド起動　　　　　　　　　　　　 |
 | docker-compose down                                    | Docker の停止                        |  
