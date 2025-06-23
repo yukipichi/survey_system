@@ -14,3 +14,12 @@ https://note.com/yuppymam/n/ne461180705be
 | Laravel              | 11.37.0    |
 | Docker               | 27.4.0     |
 
+
+## 3.コマンド一覧
+
+| コマンド                                               　| 実行する処理                         |
+| ------------------------------------------------------ | ------------------------------------|
+| docker-compose up -d                                   | Docker の 起動                       |
+| docker compose exec -it survey_system-app-1 bash       | Docker コンテナに入る 　　　　　　　　　 |
+| npm run dev                                            | フロントエンド起動　　　　　　　　　　　　 |
+| docker-compose down                                    | Docker の停止                        |  
